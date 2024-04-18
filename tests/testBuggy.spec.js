@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe("Buggy Page", () => {
-  test("Register a user", async () => {
+  test("Should register a new user", async () => {
     const { loginName, firstName, lastName, pwd } = mockUser;
     await homePage.goToRegisterPage();
     await expect(registerPage.registerTitle).toContainText(
@@ -51,7 +51,7 @@ test.describe("Buggy Page", () => {
     await expect(registerPage.cancelButton).toBeEnabled();
   });
 
-  test("Add additional info", async () => {
+  test("Should add additional information", async () => {
     const { loginName, firstName, lastName, pwd, age, address, phone } =
       mockUser;
 
@@ -76,14 +76,14 @@ test.describe("Buggy Page", () => {
     await expect(profilePage.hobbyField).not.toBeEmpty();
   });
 
-  test("Logout", async () => {
+  test("Should logout from the page", async () => {
     await homePage.loginUser(defaultUser.loginName, defaultUser.pwd);
     await expect(homePage.logoutOption).toBeVisible();
     await homePage.logoutSession();
     await homePage.expectInitialElements();
   });
 
-  test("Login with registered user", async () => {
+  test("Should login with registered user", async () => {
     const { loginName, firstName, lastName, pwd } = mockUser;
 
     await homePage.goToRegisterPage();
