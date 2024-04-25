@@ -2,6 +2,7 @@ const { test, expect } = require("@playwright/test");
 const { HomePage } = require("./pages/home.js");
 const { ProfilePage } = require("./pages/profile.js");
 const { RegisterPage } = require("./pages/register.js");
+const { faker } = require("@faker-js/faker");
 
 let homePage;
 let registerPage;
@@ -10,18 +11,17 @@ let mockUser = {};
 let defaultUser = {};
 
 test.beforeEach(async ({ page }) => {
-  const randomNumber = Date.now();
   mockUser = {
-    loginName: `Snoopy${randomNumber}`,
-    firstName: "Snoopy",
-    lastName: "RedHouse",
+    loginName: `Snoopy${faker.number.int({ min: 0, max: 100000 })}`,
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
     pwd: "Buggy_2024",
-    age: Math.floor(Math.random() * 96).toString(),
-    address: `${randomNumber} albany`,
-    phone: "1234567890",
+    age: faker.number.int({ min: 0, max: 95 }).toString(),
+    address: faker.location.streetAddress(),
+    phone: faker.string.numeric({ length: { min: 6, max: 10 } }),
   };
 
-  // This use has been created before, and it's used for easy access when needed.
+  // This user has been created before, and it's used for easy access when needed.
   defaultUser = {
     loginName: "yolas",
     pwd: mockUser.pwd,
