@@ -1,16 +1,11 @@
-const { test, expect } = require("@playwright/test");
-const { HomePage } = require("./pages/home.js");
-const { ProfilePage } = require("./pages/profile.js");
-const { RegisterPage } = require("./pages/register.js");
-const { faker } = require("@faker-js/faker");
+import { test } from "./fixtures/fixture";
+import { expect } from "@playwright/test";
+import { faker } from "@faker-js/faker";
 
-let homePage;
-let registerPage;
-let profilePage;
 let mockUser = {};
 let defaultUser = {};
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ homePage }) => {
   mockUser = {
     loginName: `Snoopy${faker.number.int({ min: 0, max: 100000 })}`,
     firstName: faker.person.firstName(),
@@ -27,20 +22,23 @@ test.beforeEach(async ({ page }) => {
     pwd: mockUser.pwd,
   };
 
-  homePage = new HomePage(page);
-  registerPage = new RegisterPage(page);
-  profilePage = new ProfilePage(page);
   await homePage.load();
 });
 
 test.describe("Buggy Page", () => {
-  test("Should register a new user", async () => {
+  //test.describe.configure({ retries: 2 });
+  test("Should register a new user @smoke", async ({
+    homePage,
+    registerPage,
+    page,
+  }) => {
     const { loginName, firstName, lastName, pwd } = mockUser;
     await homePage.goToRegisterPage();
     await expect(registerPage.registerTitle).toContainText(
       "Register with Buggy Cars"
     );
     await registerPage.addUser(loginName, firstName, lastName, pwd);
+    await page.screenshot({ path: "screenshots/registerNewUser.png" });
     await expect(registerPage.confirmationMessage).toBeVisible();
     await expect(registerPage.loginNameField).toBeEmpty();
     await expect(registerPage.firstNameField).toBeEmpty();
@@ -51,7 +49,11 @@ test.describe("Buggy Page", () => {
     await expect(registerPage.cancelButton).toBeEnabled();
   });
 
-  test("Should add additional information", async () => {
+  test("Should add additional information @regression", async ({
+    homePage,
+    registerPage,
+    profilePage,
+  }) => {
     const { loginName, firstName, lastName, pwd, age, address, phone } =
       mockUser;
 
@@ -76,14 +78,23 @@ test.describe("Buggy Page", () => {
     await expect(profilePage.hobbyField).not.toBeEmpty();
   });
 
-  test("Should logout from the page", async () => {
+  test("Should logout from the page @regression", async ({
+    homePage,
+    page,
+  }) => {
     await homePage.loginUser(defaultUser.loginName, defaultUser.pwd);
     await expect(homePage.logoutOption).toBeVisible();
     await homePage.logoutSession();
+    await page
+      .locator(".navbar.navbar-full.navbar-dark.bg-inverse")
+      .screenshot({ path: "screenshots/logoutNavigationBar.png" });
     await homePage.expectInitialElements();
   });
 
-  test("Should login with registered user", async () => {
+  test("Should login with registered user", async ({
+    homePage,
+    registerPage,
+  }) => {
     const { loginName, firstName, lastName, pwd } = mockUser;
 
     await homePage.goToRegisterPage();

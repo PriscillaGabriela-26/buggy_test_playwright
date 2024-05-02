@@ -41,4 +41,4 @@ You will need the following tools:
    ```
 
 1. : Execute the tests
-   ![Tests](/screenshoots/buggy_tests.png)
+   ![Tests](/result/buggy_tests.png)

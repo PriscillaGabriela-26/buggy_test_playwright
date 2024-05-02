@@ -1,4 +1,4 @@
-const { expect } = require("@playwright/test");
+import { expect } from "@playwright/test";
 
 class ProfilePage {
   constructor(page) {
@@ -8,7 +8,7 @@ class ProfilePage {
     this.lastNameField = this.page.locator("input[id='lastName']");
     this.genderField = this.page.locator("input[id='gender']");
     this.ageField = this.page.locator("input[id='age']");
-    this.addressField = this.page.locator('//textarea[@id="address"]');
+    this.addressField = this.page.getByLabel("Address");
     this.phoneField = this.page.locator("input[id='phone']");
     this.hobbyField = this.page.locator('select[name="hobby"]');
     this.currentPasswordField = this.page.locator(

@@ -1,4 +1,4 @@
-const { expect, test } = require("@playwright/test");
+import { expect } from "@playwright/test";
 
 class HomePage {
   constructor(page) {
@@ -18,7 +18,7 @@ class HomePage {
   }
 
   async load() {
-    await this.page.goto("https://buggy.justtestit.org/");
+    await this.page.goto("/");
   }
 
   async setDynamicBannerLocators() {
