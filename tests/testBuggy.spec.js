@@ -33,7 +33,8 @@ test.describe("Buggy Page", () => {
     page,
   }) => {
     const { loginName, firstName, lastName, pwd } = mockUser;
-    await homePage.goToRegisterPage();
+
+    await homePage.registerLink.click();
     await expect(registerPage.registerTitle).toContainText(
       "Register with Buggy Cars"
     );
@@ -57,12 +58,12 @@ test.describe("Buggy Page", () => {
     const { loginName, firstName, lastName, pwd, age, address, phone } =
       mockUser;
 
-    await homePage.goToRegisterPage();
+    await homePage.registerLink.click();
     await registerPage.addUser(loginName, firstName, lastName, pwd);
 
     await expect(registerPage.confirmationMessage).toBeVisible();
     await homePage.loginUser(loginName, pwd);
-    await homePage.goToProfilePage();
+    await homePage.profileOption.click();
     await profilePage.expectInitialElements(loginName, firstName, lastName);
     await profilePage.addInfo(age, address, phone);
 
@@ -84,7 +85,7 @@ test.describe("Buggy Page", () => {
   }) => {
     await homePage.loginUser(defaultUser.loginName, defaultUser.pwd);
     await expect(homePage.logoutOption).toBeVisible();
-    await homePage.logoutSession();
+    await homePage.logoutOption.click();
     await page
       .locator(".navbar.navbar-full.navbar-dark.bg-inverse")
       .screenshot({ path: "screenshots/logoutNavigationBar.png" });
@@ -96,8 +97,7 @@ test.describe("Buggy Page", () => {
     registerPage,
   }) => {
     const { loginName, firstName, lastName, pwd } = mockUser;
-
-    await homePage.goToRegisterPage();
+    await homePage.registerLink.click();
     await registerPage.addUser(loginName, firstName, lastName, pwd);
     await homePage.loginUser(loginName, pwd);
     await expect(homePage.greetingLocator).toHaveText(`Hi, ${firstName}`);

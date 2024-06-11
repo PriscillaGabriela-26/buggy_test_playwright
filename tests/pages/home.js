@@ -22,7 +22,7 @@ class HomePage {
   }
 
   async setDynamicBannerLocators() {
-    await this.page.waitForSelector('a:has-text("Profile")');
+    await this.page.waitForSelector('a:has-text("Profile")', { timeout: 5000 });
     this.profileOption = this.page.locator('a:has-text("Profile")');
     this.logoutOption = this.page.getByRole("link", { name: "Logout" });
     this.greetingLocator = this.page.locator("span.nav-link.disabled");
@@ -47,20 +47,7 @@ class HomePage {
     await this.passwordInput.fill(pwd);
     await expect(this.passwordInput).toHaveValue(pwd);
     await this.loginButton.click();
-
     await this.setDynamicBannerLocators();
-  }
-
-  async goToProfilePage() {
-    await this.profileOption.click();
-  }
-
-  async goToRegisterPage() {
-    await this.registerLink.click();
-  }
-
-  async logoutSession() {
-    this.logoutOption.click();
   }
 }
 
