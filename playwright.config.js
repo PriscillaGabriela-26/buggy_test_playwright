@@ -8,7 +8,7 @@ module.exports = defineConfig({
   testDir: "./tests",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 1 : undefined,
 
   reporter: [
@@ -18,9 +18,12 @@ module.exports = defineConfig({
     ["html"],
   ],
 
+  //globalSetup: require.resolve("./tests/setup/globalSetup"),
+
   use: {
     baseURL: "https://buggy.justtestit.org/",
     trace: "on-first-retry",
+    //add this parameter, using the process env that you create in the auth.setup.js for use the TOKEN globally in all test cases you will run and you don't will need to create this again per test and also the API that you call inside will call them
     // actionTimeout: 5000,
     // navigationTimeout: 5000,
     video: { mode: "on", size: { width: 1920, height: 1080 } },
@@ -28,29 +31,34 @@ module.exports = defineConfig({
 
   projects: [
     {
-      name: "dev",
+      name: "RegisterUser",
+      testMatch: "setup/registerUser.setup.js",
+    },
+
+    {
+      name: "Authentication",
+      testMatch: "setup/auth.setup.js",
+      dependencies: ["RegisterUser"],
+    },
+
+    {
+      name: "BuggyTestUsingAPI",
+      testMatch: "testBuggyByAPI.spec.js",
       use: {
         ...devices["Desktop Chrome"],
-        baseURL: "https://dev.buggy.justtestit.org/",
+        baseURL: "https://buggy.justtestit.org/",
+        storageState: ".auth/user.json",
       },
+      dependencies: ["Authentication"],
     },
+
     {
-      name: "qa",
+      name: "BuggyTestByFE",
+      testMatch: "testBuggy.spec.js",
       use: {
         ...devices["Desktop Chrome"],
         baseURL: "https://buggy.justtestit.org/",
       },
-    },
-    {
-      name: "staging",
-      use: {
-        ...devices["Desktop Chrome"],
-        baseURL: "https://staging.buggy.justtestit.org/",
-      },
-    },
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
     },
 
     {
